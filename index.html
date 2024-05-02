@@ -1,42 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Actix + WASM Perlin Noise</title>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-        }
-        canvas {
-            display: block;
-        }
-    </style>
-</head>
 <body>
     <canvas id="noise-canvas"></canvas>
     <script type="module">
-        import init, { generate_noise } from '/static/app.js';
+        // Import the initialization function and the generate_noise function
+        import init, { generate_noise } from '/app-e3d17e16ab9e6969.js'; // Adjust the path as needed
 
-        async function run() {
-            await init();
-            const canvas = document.getElementById('noise-canvas');
-            const ctx = canvas.getContext('2d');
+        async function setupCanvas() {
+            try {
+                await init(); // Initialize the WebAssembly module
 
-            function resizeCanvas() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-                generate_noise(ctx, canvas.width, canvas.height, 50.0);
+                const canvas = document.getElementById('noise-canvas');
+                const ctx = canvas.getContext('2d');
+
+                function resizeCanvas() {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                    console.log('Before generate_noise');
+                    generate_noise(ctx, canvas.width, canvas.height, 50.0); // Adjust parameters as needed
+                    console.log('After generate_noise');
+                }
+
+                window.addEventListener('resize', resizeCanvas);
+                resizeCanvas(); // Initial call to set up canvas
+            } catch (error) {
+                console.error('Error during WebAssembly module initialization:', error);
             }
-
-            window.addEventListener('resize', resizeCanvas);
-            resizeCanvas();
         }
 
-        run();
+        setupCanvas();
     </script>
 </body>
 </html>

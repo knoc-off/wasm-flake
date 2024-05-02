@@ -6,7 +6,7 @@ use wasm_bindgen::Clamped;
 #[wasm_bindgen]
 pub fn generate_noise(ctx: &CanvasRenderingContext2d, width: u32, height: u32, scale: f64) {
     let seed = (js_sys::Math::random() * 10000.0) as u32;
-    let perlin = Perlin::new(seed);
+    let perlin = Perlin::new(seed + 1);
     let mut data = Vec::new();
 
     for y in 0..height {
