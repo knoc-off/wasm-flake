@@ -1,0 +1,11 @@
+// index.scss
+body, canvas {
+    margin: 0;
+    padding: 0;
+    display: block; // Ensures the canvas uses the full width available
+}
+
+canvas {
+    width: 100vw; // 100% of the viewport width
+    height: 100vh; // 100% of the viewport height
+}

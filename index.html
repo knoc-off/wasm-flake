@@ -1,35 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dynamic Canvas Size</title>
+    <link data-trunk rel="scss" href="index.scss"/>
+</head>
 <body>
-    <canvas id="noise-canvas"></canvas>
-    <script type="module">
-        // Import the initialization function and the generate_noise function
-        import init, { generate_noise } from '/app-e3d17e16ab9e6969.js'; // Adjust the path as needed
-
-        async function setupCanvas() {
-            try {
-                await init(); // Initialize the WebAssembly module
-
-                const canvas = document.getElementById('noise-canvas');
-                const ctx = canvas.getContext('2d');
-
-                function resizeCanvas() {
-                    canvas.width = window.innerWidth;
-                    canvas.height = window.innerHeight;
-                    console.log('Before generate_noise');
-                    generate_noise(ctx, canvas.width, canvas.height, 50.0); // Adjust parameters as needed
-                    console.log('After generate_noise');
-                }
-
-                window.addEventListener('resize', resizeCanvas);
-                resizeCanvas(); // Initial call to set up canvas
-            } catch (error) {
-                console.error('Error during WebAssembly module initialization:', error);
-            }
-        }
-
-        setupCanvas();
-    </script>
+    <canvas id="perlinCanvas"></canvas>
 </body>
 </html>
 
