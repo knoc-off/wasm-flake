@@ -1,45 +1,76 @@
-use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
-use web_sys::{window, HtmlCanvasElement, CanvasRenderingContext2d};
-use noise::{NoiseFn, Perlin};
+use gloo::console;
+use js_sys::Date;
+use yew::{html, Component, Context, Html};
 
-#[wasm_bindgen]
-extern "C" {
-    pub fn alert(s: &str);
+// Define the possible messages which can be sent to the component
+pub enum Msg {
+    Increment,
+    Decrement,
 }
 
-pub fn main() -> Result<(), JsValue> {
-    let window = window().ok_or("should have a window in this context")?;
-    let document = window.document().ok_or("window should have a document")?;
-
-    let canvas = document
-        .get_element_by_id("perlinCanvas")
-        .ok_or("should have #perlinCanvas on the page")?
-        .dyn_into::<HtmlCanvasElement>()?;
-
-    // Set canvas size to match the window's inner dimensions
-    canvas.set_width(window.inner_width()?.as_f64().unwrap() as u32);
-    canvas.set_height(window.inner_height()?.as_f64().unwrap() as u32);
-
-    let context = canvas
-        .get_context("2d")?
-        .ok_or("Failed to get 2D context")?
-        .dyn_into::<CanvasRenderingContext2d>()?;
-
-    let perlin = Perlin::new(12);
-    draw_perlin_noise(&perlin, &context, canvas.width() as usize, canvas.height() as usize);
-    Ok(())
+pub struct App {
+    value: i64, // This will store the counter value
 }
 
-fn draw_perlin_noise(perlin: &Perlin, context: &CanvasRenderingContext2d, width: usize, height: usize) {
-    for x in 0..width {
-        for y in 0..height {
-            let noise_val = perlin.get([x as f64 * 0.1, y as f64 * 0.1]);
-            let color_value = ((noise_val + 1.0) / 2.0 * 255.0) as u8;
-            let color = format!("rgb({0},{0},{0})", color_value);
-            context.set_fill_style(&JsValue::from_str(&color));
-            context.fill_rect(x as f64, y as f64, 1.0, 1.0);
+impl Component for App {
+    type Message = Msg;
+    type Properties = ();
+
+    fn create(_ctx: &Context<Self>) -> Self {
+        Self { value: 0 }
+    }
+
+    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
+        match msg {
+            Msg::Increment => {
+                self.value += 1;
+                console::log!("plus one"); // Will output a string to the browser console
+                true // Return true to cause the displayed change to update
+            }
+            Msg::Decrement => {
+                self.value -= 1;
+                console::log!("minus one");
+                true
+            }
+        }
+    }
+
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        html! {
+            <div>
+                <div class="panel">
+                    // A button to send the Increment message
+                    <button class="button" onclick={ctx.link().callback(|_| Msg::Increment)}>
+                        { "+1" }
+                    </button>
+
+                    // A button to send the Decrement message
+                    <button onclick={ctx.link().callback(|_| Msg::Decrement)}>
+                        { "-1" }
+                    </button>
+
+                    // A button to send two Increment messages
+                    <button onclick={ctx.link().batch_callback(|_| vec![Msg::Increment, Msg::Increment])}>
+                        { "+1, +1" }
+                    </button>
+
+                </div>
+
+                // Display the current value of the counter
+                <p class="counter">
+                    { self.value }
+                </p>
+
+                // Display the current date and time the page was rendered
+                <p class="footer">
+                    { "Rendered: " }
+                    { String::from(Date::new_0().to_string()) }
+                </p>
+            </div>
         }
     }
 }
 
+fn main() {
+    yew::Renderer::<App>::new().render();
+}
