@@ -1,26 +1,74 @@
-button {
-  background-color: #008f53; /* Green */
-  border: 0;
-  color: white;
-  padding: 14px 14px;
-  text-align: center;
-  font-size: 16px;
-  margin: 2px 2px;
-  width: 100px;
+$primary-color: #333;
+$secondary-color: #ccc;
+$background-color: #f5f5f5;
+$font-family: Arial, sans-serif;
+
+body {
+    font-family: $font-family;
+    margin: 0;
+    padding: 0;
+    background-color: $background-color;
 }
 
-.counter {
-    color: #008f53;
-    font-size: 48px;
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h1 {
+        color: $primary-color;
+    }
+}
+
+nav {
+    ul {
+        list-style: none;
+        display: flex;
+
+        li {
+            margin-left: 20px;
+
+            a {
+                text-decoration: none;
+                color: $primary-color;
+
+                &:hover {
+                    color: darken($primary-color, 10%);
+                }
+            }
+        }
+    }
+}
+
+.about {
+    img {
+        max-width: 200px;
+        margin-bottom: 20px;
+    }
+}
+
+.projects {
+    ul {
+        list-style: none;
+        padding: 0;
+
+        li {
+            margin-bottom: 10px;
+        }
+    }
+}
+
+footer {
     text-align: center;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid $secondary-color;
 }
 
-.footer {
-    text-align: center;
-    font-size: 12px;
-}
-
-.panel {
-  display: flex;
-  justify-content: center;
-}

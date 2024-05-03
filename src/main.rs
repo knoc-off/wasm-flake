@@ -1,76 +1,70 @@
-use gloo::console;
-use js_sys::Date;
-use yew::{html, Component, Context, Html};
+use yew::prelude::*;
+use web_sys::HtmlElement;
+use web_sys::wasm_bindgen::JsCast;
 
-// Define the possible messages which can be sent to the component
-pub enum Msg {
-    Increment,
-    Decrement,
+struct Portfolio {
+    name: String,
+    github_url: String,
+    linkedin_url: String,
 }
 
-pub struct App {
-    value: i64, // This will store the counter value
-}
-
-impl Component for App {
-    type Message = Msg;
+impl Component for Portfolio {
+    type Message = ();
     type Properties = ();
 
     fn create(_ctx: &Context<Self>) -> Self {
-        Self { value: 0 }
-    }
-
-    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            Msg::Increment => {
-                self.value += 1;
-                console::log!("plus one"); // Will output a string to the browser console
-                true // Return true to cause the displayed change to update
-            }
-            Msg::Decrement => {
-                self.value -= 1;
-                console::log!("minus one");
-                true
-            }
+        Portfolio {
+            name: "Nicholas Selby".to_string(),
+            github_url: "https://github.com/knoc-off".to_string(),
+            linkedin_url: "https://www.linkedin.com/in/niko-selby/".to_string(),
         }
     }
 
-    fn view(&self, ctx: &Context<Self>) -> Html {
+    fn view(&self, _ctx: &Context<Self>) -> Html {
+        let cv_onclick = Callback::from(|_| {
+            let document = web_sys::window().unwrap().document().unwrap();
+            let link = document.create_element("a").unwrap();
+            let link_elem = link.dyn_into::<HtmlElement>().unwrap();
+            link_elem.set_attribute("href", "static/cv.pdf").unwrap();
+            link_elem.set_attribute("download", "cv.pdf").unwrap();
+            link_elem.click();
+        });
+
         html! {
-            <div>
-                <div class="panel">
-                    // A button to send the Increment message
-                    <button class="button" onclick={ctx.link().callback(|_| Msg::Increment)}>
-                        { "+1" }
-                    </button>
-
-                    // A button to send the Decrement message
-                    <button onclick={ctx.link().callback(|_| Msg::Decrement)}>
-                        { "-1" }
-                    </button>
-
-                    // A button to send two Increment messages
-                    <button onclick={ctx.link().batch_callback(|_| vec![Msg::Increment, Msg::Increment])}>
-                        { "+1, +1" }
-                    </button>
-
-                </div>
-
-                // Display the current value of the counter
-                <p class="counter">
-                    { self.value }
-                </p>
-
-                // Display the current date and time the page was rendered
-                <p class="footer">
-                    { "Rendered: " }
-                    { String::from(Date::new_0().to_string()) }
-                </p>
+            <div class="container">
+                <header>
+                    <h1>{ &self.name }</h1>
+                    <nav>
+                        <ul>
+                            <li><a href={ self.github_url.clone() } target="_blank">{ "GitHub" }</a></li>
+                            <li><a href={ self.linkedin_url.clone() } target="_blank">{ "LinkedIn" }</a></li>
+                            <li><a href="#" onclick={ cv_onclick }>{ "CV" }</a></li>
+                        </ul>
+                    </nav>
+                </header>
+                <main>
+                    <section class="about">
+                        <h2>{ "About Me" }</h2>
+                        <img src="static/img.png" alt={ self.name.clone() } />
+                        <p>{ "Write a brief introduction about yourself here." }</p>
+                    </section>
+                    <section class="projects">
+                        <h2>{ "Projects" }</h2>
+                        <ul>
+                            <li>{ "Project 1" }</li>
+                            <li>{ "Project 2" }</li>
+                            <li>{ "Project 3" }</li>
+                        </ul>
+                    </section>
+                </main>
+                <footer>
+                    <p>{ format!("© 2024 {}. All rights reserved.", &self.name) }</p>
+                </footer>
             </div>
         }
     }
 }
 
 fn main() {
-    yew::Renderer::<App>::new().render();
+    yew::Renderer::<Portfolio>::new().render();
 }
