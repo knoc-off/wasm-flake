@@ -52,9 +52,9 @@
 
           buildPhase = ''
             runHook preBuild
-            export XDG_CACHE_HOME="$TMPDIR/cache"
-            mkdir -p $XDG_CACHE_HOME
             mkdir -p $TMPDIR/output
+            mkdir -p icons
+            cp ${pkgs.super-tiny-icons}/share/icons/* icons -r
             trunk build --release --offline --dist $TMPDIR/output
             runHook postBuild
           '';
