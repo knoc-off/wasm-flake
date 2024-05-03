@@ -34,7 +34,6 @@
           version = "0.1.0";
           src = ./.;
 
-
           nativeBuildInputs = with pkgs; [
             (rust-bin.stable."1.76.0".default.override {
               extensions = [ "rust-src" ];
@@ -62,14 +61,23 @@
 
           installPhase = ''
             runHook preInstall
-            mkdir -p $out/bin
-            cp -r $TMPDIR/output/* $out/bin/
+            mkdir -p $out/lib
+            cp -r $TMPDIR/output/* $out/lib/
             runHook postInstall
           '';
-
         };
 
+        packages.webserver = pkgs.writeShellScriptBin "webserver" ''
+          ${pkgs.python3}/bin/python -m http.server --directory ${packages.actix-web-example}/lib 8080
+        '';
+
         defaultPackage = packages.actix-web-example;
+
+        apps.webserver = flake-utils.lib.mkApp {
+          drv = packages.webserver;
+        };
+
+        defaultApp = apps.webserver;
 
         devShell = pkgs.mkShell {
           inherit commonBuildInputs;
