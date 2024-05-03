@@ -47,15 +47,19 @@
             wasm-bindgen-cli
           ];
 
-          buildInputs = commonBuildInputs;
+          buildInputs = commonBuildInputs ++ [
+            pkgs.super-tiny-icons
+          ];
+
           cargoLock.lockFile = ./Cargo.lock;
 
           buildPhase = ''
             runHook preBuild
             mkdir -p $TMPDIR/output
             mkdir -p icons
-            cp ${pkgs.super-tiny-icons}/share/icons/* icons -r
-            trunk build --release --offline --dist $TMPDIR/output
+            cp -r ${pkgs.super-tiny-icons}/* icons/
+            #trunk build --release --offline --dist $TMPDIR/output
+            trunk build --release --offline --dist $TMPDIR/output --public-url /
             runHook postBuild
           '';
 
@@ -67,7 +71,7 @@
           '';
         };
 
-        # Simple webserver to host the files
+        # Python webserver script
         packages.webserver = pkgs.writeShellScriptBin "webserver" ''
           ${pkgs.python3}/bin/python -m http.server --directory ${packages.actix-web-example}/lib 8080
         '';
@@ -98,6 +102,13 @@
             dart-sass
             wasm-bindgen-cli
           ];
+          buildInputs = [
+            pkgs.super-tiny-icons
+          ];
+          shellHook = ''
+            mkdir -p icons
+            cp -r ${pkgs.super-tiny-icons}/* icons/
+          '';
           RUST_BACKTRACE = 1;
         };
       }

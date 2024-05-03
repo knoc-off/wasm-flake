@@ -39,17 +39,17 @@ impl Component for Portfolio {
                         <ul>
                             <li>
                                 <a href={ self.github_url.clone() } target="_blank">
-                                    <img src="icons/SuperTinyIcons/svg/github.svg" alt="GitHub" width="40" height="40" />
+                                    <img src="icons/share/icons/SuperTinyIcons/svg/github.svg" alt="GitHub" width="40" height="40" />
                                 </a>
                             </li>
                             <li>
                                 <a href={ self.linkedin_url.clone() } target="_blank">
-                                    <img src="icons/SuperTinyIcons/svg/linkedin.svg" alt="LinkedIn" width="40" height="40" />
+                                    <img src="icons/share/icons/SuperTinyIcons/svg/linkedin.svg" alt="LinkedIn" width="40" height="40" />
                                 </a>
                             </li>
                             <li>
                                 <a href="#" onclick={ cv_onclick }>
-                                    <img src="icons/SuperTinyIcons/svg/pdf.svg" alt="CV" width="40" height="40" />
+                                    <img src="icons/share/icons/SuperTinyIcons/svg/pdf.svg" alt="CV" width="40" height="40" />
                                 </a>
                             </li>
                         </ul>
