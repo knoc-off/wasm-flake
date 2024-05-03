@@ -67,6 +67,7 @@
           '';
         };
 
+        # Simple webserver to host the files
         packages.webserver = pkgs.writeShellScriptBin "webserver" ''
           ${pkgs.python3}/bin/python -m http.server --directory ${packages.actix-web-example}/lib 8080
         '';
